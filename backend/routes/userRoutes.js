@@ -216,7 +216,7 @@ router.get('/profile', protect, role(['student']), async (req, res) => {
 
 // @route   GET /api/users/faculty-advisors
 // @desc    Get a list of faculty advisors
-// @access  Public or Private (depending on your requirement)
+// @access  Private - admin only
 router.get('/faculty-advisors', protect, role(['admin']) ,async (req, res) => {
   try {
     // Fetch users with the role 'faculty'
@@ -225,6 +225,24 @@ router.get('/faculty-advisors', protect, role(['admin']) ,async (req, res) => {
     res.json(facultyAdvisors);
   } catch (err) {
     console.error("Error fetching faculty advisors:", err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
+/**
+ * @route   GET /api/users/students
+ * @desc    Get a list of all students
+ * @access  Private (Admin only)
+ */
+router.get('/students', protect, role(['admin']), async (req, res) => {
+  try {
+    const students = await User.find({ role: 'student' }).select(
+      'name email branch degree batch'
+    );
+    res.json(students);
+  } catch (err) {
+    console.error('Error fetching students:', err);
     res.status(500).json({ message: 'Server Error' });
   }
 });

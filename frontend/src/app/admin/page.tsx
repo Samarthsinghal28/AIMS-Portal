@@ -8,7 +8,7 @@ export default function Admin() {
   const router = useRouter();
 
   return (
-    <Dashboard title="Admin Dashboard">
+    <Dashboard>
       <div className="flex flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
         {/* Admin Dashboard Heading */}
         <div className="text-2xl font-bold text-center mb-6">

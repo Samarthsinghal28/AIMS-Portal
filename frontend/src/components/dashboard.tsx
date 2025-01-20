@@ -1,37 +1,31 @@
-"use client";
+const components: { title: string; href: string; description?: string }[] = [
+  { title: "Courses", href: "/courses" },
+  { title: "Student Record", href: "/student-record" },
+  { title: "Help", href: "/help" },
+];
 
-import React from "react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-
-export function Dashboard({
-  children,
-  title,
-}: {
-  children: React.ReactNode;
-  title?: string;
-}) {
+export function Dashboard() {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
-      <header className="bg-gray-800 text-white">
-        <div className="container mx-auto flex items-center justify-between py-4 px-6">
-          <h1 className="text-xl font-bold tracking-tight">
-            {title || "Dashboard"}
-          </h1>
-          <nav>
-            <Link href="/admin">
-              <Button variant="ghost" className="text-white">
-                Home
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
+    <div>
+      {/* Admin Dashboard Header */}
 
-      {/* Main Content */}
-      <main className="flex-1 container mx-auto py-8 px-6">{children}</main>
+      {/* Navigation Menu */}
+      <nav className="flex align-middle bg-primary text-white overflow-hidden">
+        <p className="self-center text-2xl font-bold mx-2">Admin Dashboard</p>
+        <ul className="list-none m-0 p-0 flex">
+          {/* Dynamic Components */}
+          {components.map((component) => (
+            <li key={component.href} className="float-left">
+              <a
+                href={component.href}
+                className="block  text-center px-4 py-3 no-underline hover:bg-secondary "
+              >
+                {component.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   );
 }

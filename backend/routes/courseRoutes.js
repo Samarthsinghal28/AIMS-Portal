@@ -95,7 +95,10 @@ router.get('/available', protect, role(['student']), async (req, res) => {
       branches: branch,
       batches: batch,
       degrees: degree,
-    });
+    }).populate(
+      'instructor',
+      'name email'
+    );
 
     res.json(courses);
   } catch (err) {

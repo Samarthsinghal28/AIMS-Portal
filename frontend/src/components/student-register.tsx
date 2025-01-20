@@ -99,7 +99,7 @@ export function StudentRegister() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter student's name" {...field} />
+                <Input placeholder="John Doe" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,7 +114,7 @@ export function StudentRegister() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Enter student's email" {...field} />
+                <Input type="email" placeholder="johndoe@gmail.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

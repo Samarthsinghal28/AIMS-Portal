@@ -28,42 +28,43 @@ export function PeopleList({
   footerData,
 }: GenericTableProps) {
   return (
-    <Table>
-      {caption && <TableCaption>{caption}</TableCaption>}
-      <TableHeader>
-        <TableRow>
-          {columns.map((column) => (
-            <TableHead key={column.accessor} className={column.className}>
-              {column.header}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((row, index) => (
-          <TableRow key={index}>
-            {columns.map((column) => (
-              <TableCell key={column.accessor} className={column.className}>
-                {row[column.accessor]}
-              </TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-      {footerData && (
-        <TableFooter>
+      <Table>
+        <TableHeader>
           <TableRow>
-            {footerData.map((footerValue, index) => (
-              <TableCell
-                key={index}
-                className={index === footerData.length - 1 ? "text-right" : ""}
-              >
-                {footerValue}
-              </TableCell>
+            {columns.map((column) => (
+              <TableHead key={column.accessor} className={column.className}>
+                {column.header}
+              </TableHead>
             ))}
           </TableRow>
-        </TableFooter>
-      )}
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {data.map((row, index) => (
+            <TableRow key={index}>
+              {columns.map((column) => (
+                <TableCell key={column.accessor} className={column.className}>
+                  {row[column.accessor]}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+        {footerData && (
+          <TableFooter>
+            <TableRow>
+              {footerData.map((footerValue, index) => (
+                <TableCell
+                  key={index}
+                  className={
+                    index === footerData.length - 1 ? "text-right" : ""
+                  }
+                >
+                  {footerValue}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableFooter>
+        )}
+      </Table>
   );
 }

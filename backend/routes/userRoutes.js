@@ -214,6 +214,22 @@ router.get('/profile', protect, role(['student']), async (req, res) => {
 });
 
 
+// @route   GET /api/users/faculty-advisors
+// @desc    Get a list of faculty advisors
+// @access  Public or Private (depending on your requirement)
+router.get('/faculty-advisors', protect, role(['admin']) ,async (req, res) => {
+  try {
+    // Fetch users with the role 'faculty'
+    const facultyAdvisors = await User.find({ role: 'faculty' }).select('id name email');
+
+    res.json(facultyAdvisors);
+  } catch (err) {
+    console.error("Error fetching faculty advisors:", err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
 
 
 

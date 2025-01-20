@@ -1,5 +1,5 @@
 import { Dashboard } from "@/components/dashboard";
-import { Register } from "@/components/register";
+import { StudentRegister } from "@/components/student-register";
 
 export default function StudReg() {
   return (
@@ -12,7 +12,7 @@ export default function StudReg() {
 
         {/* Form Section */}
         <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-          <Register />
+          <StudentRegister />
         </div>
       </Dashboard>
     </div>

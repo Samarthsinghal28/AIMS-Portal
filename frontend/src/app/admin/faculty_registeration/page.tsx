@@ -1,5 +1,5 @@
 import { Dashboard } from "@/components/dashboard";
-import { Register } from "@/components/register";
+import { FacultyRegister } from "@/components/faculty-register";
 
 export default function FacReg() {
   return (
@@ -12,7 +12,7 @@ export default function FacReg() {
 
         {/* Form Section */}
         <div className="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
-          <Register />
+          <FacultyRegister />
         </div>
       </Dashboard>
     </div>

@@ -2,32 +2,62 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Dashboard } from "@/components/dashboard";
+import { AdminDashboard } from "@/components/admin_dashboard";
+import { PeopleList } from "@/components/people_list";
+
+const students = [
+  {
+    name: "John Doe",
+    email: "john@example.com",
+    branch: "CSE",
+    degree: "B.Tech",
+    batch: "2025",
+  },
+  {
+    name: "Jane Smith",
+    email: "jane@example.com",
+    branch: "ECE",
+    degree: "B.Tech",
+    batch: "2024",
+  },
+  {
+    name: "Alice Johnson",
+    email: "alice@example.com",
+    branch: "ME",
+    degree: "B.Tech",
+    batch: "2023",
+  },
+  {
+    name: "Bob Brown",
+    email: "bob@example.com",
+    branch: "EE",
+    degree: "B.Tech",
+    batch: "2026",
+  },
+];
+
+const studentColumns = [
+  { header: "Name", accessor: "name", className: "font-medium" },
+  { header: "Email", accessor: "email" },
+  { header: "Branch", accessor: "branch" },
+  { header: "Degree", accessor: "degree" },
+  { header: "Batch", accessor: "batch", className: "text-right" },
+];
 
 export default function Admin() {
   const router = useRouter();
 
   return (
-    <Dashboard>
-      <div className="flex flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-        {/* Admin Dashboard Heading */}
-        <div className="text-2xl font-bold text-center mb-6">
-          Admin Dashboard
-        </div>
-
-        {/* Registration Buttons */}
-        <div className="flex w-full max-w-sm flex-col gap-6">
-          {/* Navigate to Student Registration */}
-          <Button onClick={() => router.push("/admin/student_registeration")}>
-            Student Register
-          </Button>
-
-          {/* Navigate to Faculty Registration */}
-          <Button onClick={() => router.push("/admin/faculty_registeration")}>
-            Faculty Register
-          </Button>
-        </div>
+    <div className="">
+      <AdminDashboard />
+      <div className="flex m-20">
+        <PeopleList
+          columns={studentColumns}
+          data={students}
+          caption="List of Students"
+          footerData={["", "", "", "Total Students", `${students.length}`]}
+        />
       </div>
-    </Dashboard>
+    </div>
   );
 }

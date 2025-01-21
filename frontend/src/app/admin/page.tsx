@@ -1,64 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { AdminDashboard } from "@/components/admin_dashboard";
 import { PeopleList } from "@/components/people_list";
+import { useZustandStore } from "@/store/store"; // Assuming you have a Zustand store with auth info
+import Loading from "../../components/loading";
 
-const students = [
-  {
-    name: "John Doe",
-    email: "john@example.com",
-    branch: "CSE",
-    degree: "B.Tech",
-    batch: "2025",
-  },
-  {
-    name: "Jane Smith",
-    email: "jane@example.com",
-    branch: "ECE",
-    degree: "B.Tech",
-    batch: "2024",
-  },
-  {
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    branch: "ME",
-    degree: "B.Tech",
-    batch: "2023",
-  },
-  {
-    name: "Bob Brown",
-    email: "bob@example.com",
-    branch: "EE",
-    degree: "B.Tech",
-    batch: "2026",
-  },
-];
 
-const faculty = [
-  {
-    name: "Dr. Sarah White",
-    email: "sarah@example.com",
-    department: "CSE",
-    designation: "Professor",
-    yearsOfExperience: 15,
-  },
-  {
-    name: "Dr. Mike Green",
-    email: "mike@example.com",
-    department: "ECE",
-    designation: "Associate Professor",
-    yearsOfExperience: 10,
-  },
-  {
-    name: "Dr. Anna Brown",
-    email: "anna@example.com",
-    department: "ME",
-    designation: "Assistant Professor",
-    yearsOfExperience: 8,
-  },
-];
 
 const studentColumns = [
   { header: "Name", accessor: "name", className: "font-medium" },
@@ -72,18 +22,58 @@ const facultyColumns = [
   { header: "Name", accessor: "name", className: "font-medium" },
   { header: "Email", accessor: "email" },
   { header: "Department", accessor: "department" },
-  { header: "Designation", accessor: "designation" },
-  {
-    header: "Experience (Years)",
-    accessor: "yearsOfExperience",
-    className: "text-right",
-  },
+  // { header: "Designation", accessor: "designation" },
+  // {
+  //   header: "Experience (Years)",
+  //   accessor: "yearsOfExperience",
+  //   className: "text-right",
+  // },
 ];
 
 export default function Admin() {
   const [selectedView, setSelectedView] = useState<"students" | "faculty">(
     "students"
   );
+  const [students, setStudents] = useState([]);
+  const [faculty, setFaculty] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const { token } = useZustandStore(); // Get the token from your global state
+
+  useEffect(() => {
+
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const fetchData = async () => {
+      setLoading(true);
+      await delay(1000); // Delay for 1 second (adjust the time as needed)
+      setError(null);
+      try {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+        if (selectedView === "students") {
+          const res = await axios.get("http://localhost:5000/api/users/students", {
+            headers,
+          });
+          setStudents(res.data);
+        } else {
+          const res = await axios.get("http://localhost:5000/api/users/faculty-advisors", {
+            headers,
+          });
+          setFaculty(res.data);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        setError(err.response?.data?.message || "Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selectedView, token]);
 
   return (
     <div className="">
@@ -103,19 +93,34 @@ export default function Admin() {
         </Button>
       </div>
       <div className="m-20 justify-evenly">
-        {selectedView === "students" ? (
+        {error && <p className="text-red-500">{error}</p>}
+        {loading ? (
+          <Loading/>
+        ) : selectedView === "students" ? (
           <PeopleList
             columns={studentColumns}
             data={students}
             caption="List of Students"
-            footerData={["", "", "", "Total Students", `${students.length}`]}
+            footerData={[
+              "",
+              "",
+              "",
+              "Total Students",
+              `${students.length}`,
+            ]}
           />
         ) : (
           <PeopleList
             columns={facultyColumns}
             data={faculty}
             caption="List of Faculty"
-            footerData={["", "", "", "Total Faculty", `${faculty.length}`]}
+            footerData={[
+              "",
+              "",
+              "",
+              "Total Faculty",
+              `${faculty.length}`,
+            ]}
           />
         )}
       </div>

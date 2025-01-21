@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { z } from "zod";
-import axios from 'axios';
+import axios from "axios";
 import classnames from "classnames";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,13 +14,19 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import * as Select from "@radix-ui/react-select";
-import {
-  CheckIcon,
-  ChevronDownIcon,
-} from "@radix-ui/react-icons";
 
 // Define constants for options
 const branches = ["CSE", "EE", "Civil"];
@@ -34,20 +40,26 @@ const formSchema = z.object({
   batch: z.string().nonempty({ message: "Please select a batch." }),
   branch: z.string().nonempty({ message: "Please select a branch." }),
   degree: z.string().nonempty({ message: "Please select a degree." }),
-  facultyAdvisor: z.string().nonempty({ message: "Please select a faculty advisor." }),
+  facultyAdvisor: z
+    .string()
+    .nonempty({ message: "Please select a faculty advisor." }),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export function StudentRegister() {
-  const [facultyAdvisors, setFacultyAdvisors] = React.useState<{ _id: string; name: string; email: string; }[]>([]);
+  const [facultyAdvisors, setFacultyAdvisors] = React.useState<
+    { _id: string; name: string; email: string }[]
+  >([]);
 
   // Fetch faculty advisors from the backend
   React.useEffect(() => {
     const fetchFacultyAdvisors = async () => {
       try {
         console.log("Fetching faculty advisors...");
-        const res = await axios.get('http://localhost:5000/api/users/faculty-advisors');
+        const res = await axios.get(
+          "http://localhost:5000/api/users/faculty-advisors"
+        );
         console.log("Faculty advisors fetched successfully:", res.data);
         setFacultyAdvisors(res.data);
       } catch (err) {
@@ -74,11 +86,14 @@ export function StudentRegister() {
   const onSubmit = async (data: FormData) => {
     try {
       // Add the 'role' field as 'student'
-      const postData = { ...data, role: 'student' };
-      const res = await axios.post('http://localhost:5000/api/users/register', postData);
+      const postData = { ...data, role: "student" };
+      const res = await axios.post(
+        "http://localhost:5000/api/users/register",
+        postData
+      );
       console.log("Student registered successfully:", res.data);
       // Show success message or handle success as needed
-      alert('Student registered successfully.');
+      alert("Student registered successfully.");
       // Reset the form
       form.reset();
     } catch (err: any) {
@@ -90,7 +105,7 @@ export function StudentRegister() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         {/* Name */}
         <FormField
           control={form.control}
@@ -114,7 +129,11 @@ export function StudentRegister() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="johndoe@gmail.com" {...field} />
+                <Input
+                  type="email"
+                  placeholder="johndoe@gmail.com"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -122,128 +141,71 @@ export function StudentRegister() {
         />
 
         {/* Batch */}
-        <FormField
-          control={form.control}
-          name="batch"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Batch</FormLabel>
-              <FormControl>
-                <Select.Root value={field.value} onValueChange={field.onChange}>
-                  <Select.Trigger className="SelectTrigger">
-                    <Select.Value placeholder="Select batch" />
-                    <Select.Icon className="SelectIcon">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="SelectContent">
-                    <Select.Viewport className="SelectViewport">
-                      {batches.map((batch) => (
-                        <SelectItem key={batch.toString()} value={batch.toString()}>
-                          {batch}
-                        </SelectItem>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Root>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormItem>
+          <FormLabel>Batch</FormLabel>
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Batch" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="2021">2021</SelectItem>
+                <SelectItem value="2022">2022</SelectItem>
+                <SelectItem value="2023">2023</SelectItem>
+                <SelectItem value="2024">2024</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </FormItem>
 
         {/* Branch */}
-        <FormField
-          control={form.control}
-          name="branch"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Branch</FormLabel>
-              <FormControl>
-                <Select.Root value={field.value} onValueChange={field.onChange}>
-                  <Select.Trigger className="SelectTrigger">
-                    <Select.Value placeholder="Select branch" />
-                    <Select.Icon className="SelectIcon">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="SelectContent">
-                    <Select.Viewport className="SelectViewport">
-                      {branches.map((branch) => (
-                        <SelectItem key={branch} value={branch}>
-                          {branch}
-                        </SelectItem>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Root>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormItem>
+          <FormLabel>Branch</FormLabel>
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Branch" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="CSE">CSE</SelectItem>
+                <SelectItem value="EE">EE</SelectItem>
+                <SelectItem value="CIVIL">CIVIL</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </FormItem>
 
         {/* Degree */}
-        <FormField
-          control={form.control}
-          name="degree"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Degree</FormLabel>
-              <FormControl>
-                <Select.Root value={field.value} onValueChange={field.onChange}>
-                  <Select.Trigger className="SelectTrigger">
-                    <Select.Value placeholder="Select degree" />
-                    <Select.Icon className="SelectIcon">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="SelectContent">
-                    <Select.Viewport className="SelectViewport">
-                      {degrees.map((degree) => (
-                        <SelectItem key={degree} value={degree}>
-                          {degree}
-                        </SelectItem>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Root>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormItem>
+          <FormLabel>Degree</FormLabel>
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Degree Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="CSE">CSE</SelectItem>
+                <SelectItem value="EE">EE</SelectItem>
+                <SelectItem value="CIVIL">CIVIL</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </FormItem>
 
         {/* Faculty Advisor */}
-        <FormField
-          control={form.control}
-          name="facultyAdvisor"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Faculty Advisor</FormLabel>
-              <FormControl>
-                <Select.Root value={field.value} onValueChange={field.onChange}>
-                  <Select.Trigger className="SelectTrigger">
-                    <Select.Value placeholder="Select faculty advisor" />
-                    <Select.Icon className="SelectIcon">
-                      <ChevronDownIcon />
-                    </Select.Icon>
-                  </Select.Trigger>
-                  <Select.Content className="SelectContent">
-                    <Select.Viewport className="SelectViewport">
-                      {facultyAdvisors.map((advisor) => (
-                        <SelectItem key={advisor._id} value={advisor._id}>
-                          {advisor.name} ({advisor.email})
-                        </SelectItem>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Root>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormItem>
+          <FormLabel>Faculty Advisor</FormLabel>
+          <Select>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Respective Advisor" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="Puneet Goyal">Puneet Goyal</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </FormItem>
 
         <Button type="submit">Register Student</Button>
       </form>
@@ -252,24 +214,28 @@ export function StudentRegister() {
 }
 
 // SelectItem component for Radix UI Select
-const SelectItem = React.forwardRef(
-  (
-    { children, className, ...props }: React.ComponentPropsWithoutRef<typeof Select.Item>,
-    forwardedRef: React.Ref<HTMLDivElement>
-  ) => {
-    return (
-      <Select.Item
-        className={classnames("SelectItem", className)}
-        {...props}
-        ref={forwardedRef}
-      >
-        <Select.ItemText>{children}</Select.ItemText>
-        <Select.ItemIndicator className="SelectItemIndicator">
-          <CheckIcon />
-        </Select.ItemIndicator>
-      </Select.Item>
-    );
-  }
-);
+// const SelectItem = React.forwardRef(
+//   (
+//     {
+//       children,
+//       className,
+//       ...props
+//     }: React.ComponentPropsWithoutRef<typeof Select.Item>,
+//     forwardedRef: React.Ref<HTMLDivElement>
+//   ) => {
+//     return (
+//       <Select.Item
+//         className={classnames("SelectItem", className)}
+//         {...props}
+//         ref={forwardedRef}
+//       >
+//         <Select.ItemText>{children}</Select.ItemText>
+//         <Select.ItemIndicator className="SelectItemIndicator">
+//           <CheckIcon />
+//         </Select.ItemIndicator>
+//       </Select.Item>
+//     );
+//   }
+// );
 
-SelectItem.displayName = "SelectItem";
+// SelectItem.displayName = "SelectItem";

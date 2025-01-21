@@ -8,8 +8,6 @@ import { PeopleList } from "@/components/people_list";
 import { useZustandStore } from "@/store/store"; // Assuming you have a Zustand store with auth info
 import Loading from "../../components/loading";
 
-
-
 const studentColumns = [
   { header: "Name", accessor: "name", className: "font-medium" },
   { header: "Email", accessor: "email" },
@@ -42,8 +40,8 @@ export default function Admin() {
   const { token } = useZustandStore(); // Get the token from your global state
 
   useEffect(() => {
-
-    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
 
     const fetchData = async () => {
       setLoading(true);
@@ -54,14 +52,20 @@ export default function Admin() {
           Authorization: `Bearer ${token}`,
         };
         if (selectedView === "students") {
-          const res = await axios.get("http://localhost:5000/api/users/students", {
-            headers,
-          });
+          const res = await axios.get(
+            "http://localhost:5000/api/users/students",
+            {
+              headers,
+            }
+          );
           setStudents(res.data);
         } else {
-          const res = await axios.get("http://localhost:5000/api/users/faculty-advisors", {
-            headers,
-          });
+          const res = await axios.get(
+            "http://localhost:5000/api/users/faculty-advisors",
+            {
+              headers,
+            }
+          );
           setFaculty(res.data);
         }
       } catch (err: any) {
@@ -78,6 +82,7 @@ export default function Admin() {
   return (
     <div className="">
       <AdminDashboard />
+      {/* <p className="m-4 self-center text-4xl font-bold">Admin DashBoard</p> */}
       <div className="m-4 flex gap-4 ">
         <Button
           variant={selectedView === "students" ? "default" : "outline"}
@@ -95,32 +100,20 @@ export default function Admin() {
       <div className="m-20 justify-evenly">
         {error && <p className="text-red-500">{error}</p>}
         {loading ? (
-          <Loading/>
+          <Loading />
         ) : selectedView === "students" ? (
           <PeopleList
             columns={studentColumns}
             data={students}
             caption="List of Students"
-            footerData={[
-              "",
-              "",
-              "",
-              "Total Students",
-              `${students.length}`,
-            ]}
+            footerData={["", "", "", "Total Students", `${students.length}`]}
           />
         ) : (
           <PeopleList
             columns={facultyColumns}
             data={faculty}
             caption="List of Faculty"
-            footerData={[
-              "",
-              "",
-              "",
-              "Total Faculty",
-              `${faculty.length}`,
-            ]}
+            footerData={["", "", "", "Total Faculty", `${faculty.length}`]}
           />
         )}
       </div>

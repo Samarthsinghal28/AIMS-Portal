@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { z } from "zod";
-import axios from 'axios';
+import axios from "axios";
 import classnames from "classnames";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,21 +17,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import * as Select from "@radix-ui/react-select";
-import {
-  CheckIcon,
-  ChevronDownIcon,
-} from "@radix-ui/react-icons";
+import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import { useZustandStore } from "../store/store";
 
 // Define the form schema using Zod
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Enter a valid email." })
+  email: z.string().email({ message: "Enter a valid email." }),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 export function FacultyRegister() {
-  
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,14 +37,23 @@ export function FacultyRegister() {
     },
   });
 
+  const { token } = useZustandStore(); // Get the token from your global state
+
   const onSubmit = async (data: FormData) => {
     try {
-      // Add the 'role' field as 'student'
-      const postData = { ...data, role: 'faculty' };
-      const res = await axios.post('http://localhost:5000/api/users/register', postData);
+      // Add the 'role' field as 'faculty'
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const postData = { ...data, role: "faculty" };
+      const res = await axios.post(
+        "http://localhost:5000/api/users/register",
+        postData, // Pass postData as the request body
+        { headers } // Pass headers as the config
+      );
       console.log("Faculty registered successfully:", res.data);
       // Show success message or handle success as needed
-      alert('Faculty registered successfully.');
+      alert("Faculty registered successfully.");
       // Reset the form
       form.reset();
     } catch (err: any) {
@@ -83,15 +89,18 @@ export function FacultyRegister() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Enter faculty's email" {...field} />
+                <Input
+                  type="email"
+                  placeholder="Enter faculty's email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-    
 
-        <Button type="submit">Register Student</Button>
+        <Button type="submit">Register Faculty</Button>
       </form>
     </Form>
   );
@@ -100,7 +109,11 @@ export function FacultyRegister() {
 // SelectItem component for Radix UI Select
 const SelectItem = React.forwardRef(
   (
-    { children, className, ...props }: React.ComponentPropsWithoutRef<typeof Select.Item>,
+    {
+      children,
+      className,
+      ...props
+    }: React.ComponentPropsWithoutRef<typeof Select.Item>,
     forwardedRef: React.Ref<HTMLDivElement>
   ) => {
     return (

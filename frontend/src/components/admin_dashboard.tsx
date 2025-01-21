@@ -1,7 +1,7 @@
 const components: { title: string; href: string; description?: string }[] = [
+  { title: "Dashboard", href: "/admin" },
   { title: "Student Registeration", href: "/admin/student_registeration" },
   { title: "Faculty Registeration", href: "/admin/faculty_registeration" },
-  { title: "Home", href: "/admin" },
 ];
 
 export function AdminDashboard() {
@@ -11,19 +11,31 @@ export function AdminDashboard() {
 
       {/* Navigation Menu */}
       <nav className="flex align-middle bg-primary text-white overflow-hidden">
-        <p className="self-center text-2xl font-bold mx-2">Admin Dashboard</p>
-        <ul className="list-none m-0 p-0 flex">
+        <p className="self-center text-2xl font-bold mx-4 ">AIMS-IITRPR</p>
+        <ul className=" flex justify-end">
           {/* Dynamic Components */}
           {components.map((component) => (
-            <li key={component.href} className="float-left">
+            <div className="">
+              <li key={component.href} className="float-left">
+                <a
+                  href={component.href}
+                  className="block text-center px-4 py-3 no-underline hover:bg-secondary"
+                >
+                  {component.title}
+                </a>
+              </li>
+            </div>
+          ))}
+          <div className="">
+            <li key="/login" className="ml-auto">
               <a
-                href={component.href}
-                className="block  text-center px-4 py-3 no-underline hover:bg-secondary "
+                href="/login"
+                className="block text-center px-4 py-3 no-underline hover:bg-secondary "
               >
-                {component.title}
+                Logout
               </a>
             </li>
-          ))}
+          </div>
         </ul>
       </nav>
     </div>

@@ -7,6 +7,8 @@ import { AdminDashboard } from "@/components/admin_dashboard";
 import { TableList } from "@/components/table_list";
 import { useZustandStore } from "@/store/store"; // Assuming you have a Zustand store with auth info
 import Loading from "../../components/loading";
+import { withAuth } from '@/components/withAuth';
+
 
 const studentColumns = [
   { header: "Name", accessor: "name", className: "font-medium" },
@@ -28,7 +30,7 @@ const facultyColumns = [
   // },
 ];
 
-export default function Admin() {
+function Admin() {
   const [selectedView, setSelectedView] = useState<"students" | "faculty">(
     "students"
   );
@@ -81,7 +83,6 @@ export default function Admin() {
 
   return (
     <div className="">
-      {token ? (
         <>
           <AdminDashboard />
           {/* <p className="m-4 self-center text-4xl font-bold">Admin DashBoard</p> */}
@@ -126,9 +127,14 @@ export default function Admin() {
             )}
           </div>
         </>
-      ) : (
-        <div>Not Authorized</div>
-      )}
     </div>
   );
 }
+
+
+export default withAuth(Admin);
+
+
+
+
+

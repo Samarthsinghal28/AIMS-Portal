@@ -1,10 +1,25 @@
+"use client"
+import { useRouter } from 'next/navigation'; // If you're using Next.js
+
+
 const components: { title: string; href: string; description?: string }[] = [
   { title: "Dashboard", href: "/admin" },
   { title: "Student Registeration", href: "/admin/student_registeration" },
   { title: "Faculty Registeration", href: "/admin/faculty_registeration" },
+  
 ];
 
 export function AdminDashboard() {
+
+  const router = useRouter();
+  
+
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.clear();
+    window.location.href = '/login';
+  };
+
   return (
     <div>
       {/* Admin Dashboard Header */}
@@ -28,12 +43,13 @@ export function AdminDashboard() {
           ))}
           <div className="">
             <li key="/login" className="ml-auto">
-              <a
-                href="/login"
-                className="block text-center px-4 py-3 no-underline hover:bg-secondary "
+            <button
+                onClick={handleLogout}
+                className="block text-center px-4 py-3 no-underline hover:bg-secondary bg-transparent border-0 text-white"
               >
+
                 Logout
-              </a>
+              </button>
             </li>
           </div>
         </ul>

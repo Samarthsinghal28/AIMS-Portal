@@ -3,7 +3,6 @@
 import * as React from "react";
 import { z } from "zod";
 import axios from "axios";
-import classnames from "classnames";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -26,6 +25,7 @@ import {
 } from "@/components/ui/select";
 
 import { Input } from "@/components/ui/input";
+import { useZustandStore } from "@/store/store"; // Assuming you have a Zustand store with auth info
 import { Button } from "@/components/ui/button";
 
 // Define constants for options
@@ -52,13 +52,23 @@ export function StudentRegister() {
     { _id: string; name: string; email: string }[]
   >([]);
 
+  const { token } = useZustandStore(); // Get the token from your global state
+  console.log("Token:", token);
+
   // Fetch faculty advisors from the backend
   React.useEffect(() => {
     const fetchFacultyAdvisors = async () => {
       try {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+        console.log(headers);
         console.log("Fetching faculty advisors...");
         const res = await axios.get(
-          "http://localhost:5000/api/users/faculty-advisors"
+          "http://localhost:5000/api/users/faculty-advisors",
+          {
+            headers,
+          }
         );
         console.log("Faculty advisors fetched successfully:", res.data);
         setFacultyAdvisors(res.data);
@@ -68,8 +78,10 @@ export function StudentRegister() {
       }
     };
 
-    fetchFacultyAdvisors();
-  }, []);
+    if (token) {
+      fetchFacultyAdvisors();
+    }
+  }, [token]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -86,10 +98,17 @@ export function StudentRegister() {
   const onSubmit = async (data: FormData) => {
     try {
       // Add the 'role' field as 'student'
+      console.log("Registering student with data:", data);
       const postData = { ...data, role: "student" };
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
       const res = await axios.post(
         "http://localhost:5000/api/users/register",
-        postData
+        postData,
+        {
+          headers,
+        }
       );
       console.log("Student registered successfully:", res.data);
       // Show success message or handle success as needed
@@ -114,7 +133,7 @@ export function StudentRegister() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="John Doe" {...field} />
+                <Input placeholder="Enter student's name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -131,7 +150,7 @@ export function StudentRegister() {
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="johndoe@gmail.com"
+                  placeholder="Enter student's email"
                   {...field}
                 />
               </FormControl>
@@ -141,101 +160,114 @@ export function StudentRegister() {
         />
 
         {/* Batch */}
-        <FormItem>
-          <FormLabel>Batch</FormLabel>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Batch" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="2021">2021</SelectItem>
-                <SelectItem value="2022">2022</SelectItem>
-                <SelectItem value="2023">2023</SelectItem>
-                <SelectItem value="2024">2024</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="batch"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Batch</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Batch" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {batches.map((batch) => (
+                      <SelectItem
+                        key={batch.toString()}
+                        value={batch.toString()}
+                      >
+                        {batch}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Branch */}
-        <FormItem>
-          <FormLabel>Branch</FormLabel>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Branch" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="CSE">CSE</SelectItem>
-                <SelectItem value="EE">EE</SelectItem>
-                <SelectItem value="CIVIL">CIVIL</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="branch"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Branch</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Branch" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {branches.map((branch) => (
+                      <SelectItem key={branch} value={branch}>
+                        {branch}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Degree */}
-        <FormItem>
-          <FormLabel>Degree</FormLabel>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Degree Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="CSE">CSE</SelectItem>
-                <SelectItem value="EE">EE</SelectItem>
-                <SelectItem value="CIVIL">CIVIL</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="degree"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Degree</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Degree Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {degrees.map((degree) => (
+                      <SelectItem key={degree} value={degree}>
+                        {degree}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {/* Faculty Advisor */}
-        <FormItem>
-          <FormLabel>Faculty Advisor</FormLabel>
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Respective Advisor" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="Puneet Goyal">Puneet Goyal</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="facultyAdvisor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Faculty Advisor</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Respective Advisor" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {facultyAdvisors.map((advisor) => (
+                      <SelectItem key={advisor._id} value={advisor._id}>
+                        {advisor.name} ({advisor.email})
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button type="submit">Register Student</Button>
       </form>
     </Form>
   );
 }
-
-// SelectItem component for Radix UI Select
-// const SelectItem = React.forwardRef(
-//   (
-//     {
-//       children,
-//       className,
-//       ...props
-//     }: React.ComponentPropsWithoutRef<typeof Select.Item>,
-//     forwardedRef: React.Ref<HTMLDivElement>
-//   ) => {
-//     return (
-//       <Select.Item
-//         className={classnames("SelectItem", className)}
-//         {...props}
-//         ref={forwardedRef}
-//       >
-//         <Select.ItemText>{children}</Select.ItemText>
-//         <Select.ItemIndicator className="SelectItemIndicator">
-//           <CheckIcon />
-//         </Select.ItemIndicator>
-//       </Select.Item>
-//     );
-//   }
-// );
-
-// SelectItem.displayName = "SelectItem";

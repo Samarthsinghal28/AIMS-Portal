@@ -42,6 +42,7 @@ export function FacultyRegister() {
   const onSubmit = async (data: FormData) => {
     try {
       // Add the 'role' field as 'faculty'
+    
       const headers = {
         Authorization: `Bearer ${token}`,
       };

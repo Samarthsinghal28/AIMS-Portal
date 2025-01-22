@@ -81,42 +81,48 @@ export default function Admin() {
 
   return (
     <div className="">
-      <AdminDashboard />
-      {/* <p className="m-4 self-center text-4xl font-bold">Admin DashBoard</p> */}
-      <div className="m-4 flex gap-4 ">
-        <Button
-          variant={selectedView === "students" ? "default" : "outline"}
-          onClick={() => setSelectedView("students")}
-        >
-          Students
-        </Button>
-        <Button
-          variant={selectedView === "faculty" ? "default" : "outline"}
-          onClick={() => setSelectedView("faculty")}
-        >
-          Faculty
-        </Button>
-      </div>
-      <div className="m-20 justify-evenly">
-        {error && <p className="text-red-500">{error}</p>}
-        {loading ? (
-          <Loading />
-        ) : selectedView === "students" ? (
-          <PeopleList
-            columns={studentColumns}
-            data={students}
-            caption="List of Students"
-            footerData={["", "", "", "Total Students", `${students.length}`]}
-          />
-        ) : (
-          <PeopleList
-            columns={facultyColumns}
-            data={faculty}
-            caption="List of Faculty"
-            footerData={["", "", "", "Total Faculty", `${faculty.length}`]}
-          />
-        )}
-      </div>
+      {token ? (
+        <>
+          <AdminDashboard />
+          {/* <p className="m-4 self-center text-4xl font-bold">Admin DashBoard</p> */}
+          <div className="m-4 flex gap-4 ">
+            <Button
+              variant={selectedView === "students" ? "default" : "outline"}
+              onClick={() => setSelectedView("students")}
+            >
+              Students
+            </Button>
+            <Button
+              variant={selectedView === "faculty" ? "default" : "outline"}
+              onClick={() => setSelectedView("faculty")}
+            >
+              Faculty
+            </Button>
+          </div>
+          <div className="m-20 justify-evenly">
+            {error && <p className="text-red-500">{error}</p>}
+            {loading ? (
+              <Loading />
+            ) : selectedView === "students" ? (
+              <PeopleList
+                columns={studentColumns}
+                data={students}
+                caption="List of Students"
+                footerData={["", "", "", "Total Students", `${students.length}`]}
+              />
+            ) : (
+              <PeopleList
+                columns={facultyColumns}
+                data={faculty}
+                caption="List of Faculty"
+                footerData={["", "", "", "Total Faculty", `${faculty.length}`]}
+              />
+            )}
+          </div>
+        </>
+      ) : (
+        <div>Not Authorized</div>
+      )}
     </div>
   );
 }

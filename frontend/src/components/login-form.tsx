@@ -66,8 +66,6 @@ export function LoginForm({
       setToken(token);
       setIsSignedIn(true);
 
-      // Store token in localStorage for persistent authentication
-      localStorage.setItem('aims_token', token);
 
       // Redirect based on user role
       const role = user.role;

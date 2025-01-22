@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { AdminDashboard } from "@/components/admin_dashboard";
-import { PeopleList } from "@/components/people_list";
+import { TableList } from "@/components/table_list";
 import { useZustandStore } from "@/store/store"; // Assuming you have a Zustand store with auth info
 import Loading from "../../components/loading";
 
@@ -104,14 +104,20 @@ export default function Admin() {
             {loading ? (
               <Loading />
             ) : selectedView === "students" ? (
-              <PeopleList
+              <TableList
                 columns={studentColumns}
                 data={students}
                 caption="List of Students"
-                footerData={["", "", "", "Total Students", `${students.length}`]}
+                footerData={[
+                  "",
+                  "",
+                  "",
+                  "Total Students",
+                  `${students.length}`,
+                ]}
               />
             ) : (
-              <PeopleList
+              <TableList
                 columns={facultyColumns}
                 data={faculty}
                 caption="List of Faculty"

@@ -2,12 +2,11 @@
 import { useRouter } from "next/navigation"; // If you're using Next.js
 
 const components: { title: string; href: string; description?: string }[] = [
-  { title: "Dashboard", href: "/admin" },
-  { title: "Student Registeration", href: "/admin/student_registeration" },
-  { title: "Faculty Registeration", href: "/admin/faculty_registeration" },
+  { title: "Dashboard", href: "/student" },
+  { title: "Course Add/Drop", href: "/student/course_add_drop" },
 ];
 
-export function AdminDashboard() {
+export function StudentDashboard() {
   const router = useRouter();
 
   const handleLogout = () => {

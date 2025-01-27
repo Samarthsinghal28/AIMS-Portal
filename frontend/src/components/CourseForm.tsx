@@ -17,20 +17,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea"; 
+import { useZustandStore } from "@/store/store"; // Adjust the path as needed
 
 // Define constants for options
-const departments = ["CSE", "EE", "Civil"];
-const degrees = ["BTech", "MTech"];
+const branches = ["CSE", "EE", "Civil"];
+const degrees = ["BTECH", "MTECH"];
 const batches = ["2022", "2023", "2024"];
 
 // Define the form schema using Zod
 const formSchema = z.object({
-  courseName: z.string().min(2, { message: "Course name must be at least 2 characters." }),
+  title: z.string().min(2, { message: "Title must be at least 2 characters." }),
   courseCode: z.string().min(2, { message: "Course code must be at least 2 characters." }),
-  department: z.array(z.string()).nonempty({ message: "Please select at least one department." }),
-  degree: z.array(z.string()).nonempty({ message: "Please select at least one degree." }),
-  batch: z.array(z.string()).nonempty({ message: "Please select at least one batch." }),
-  credits: z.number().min(1, { message: "Credits must be at least 1." }),
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }),
+  branches: z.array(z.string()).nonempty({ message: "Please select at least one branch." }),
+  degrees: z.array(z.string()).nonempty({ message: "Please select at least one degree." }),
+  batches: z.array(z.string()).nonempty({ message: "Please select at least one batch." }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -39,18 +41,29 @@ export function AddCourse() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      courseName: "",
+      title: "",
       courseCode: "",
-      department: [],
-      degree: [],
-      batch: [],
-      credits: 3,
+      description: "",
+      branches: [branches[0]],
+      degrees: [degrees[0]],
+      batches: [batches[0]],
     },
   });
 
+  const { token } = useZustandStore(); // Get the authentication token
+
   const onSubmit = async (data: FormData) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/courses/add", data);
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      console.log(headers);
+
+      const res = await axios.post("http://localhost:5000/api/courses/", data, {
+        headers,
+      });
       console.log("Course added successfully:", res.data);
       alert("Course added successfully.");
       form.reset();
@@ -63,15 +76,15 @@ export function AddCourse() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Course Name */}
+        {/* Title */}
         <FormField
           control={form.control}
-          name="courseName"
+          name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Course Name</FormLabel>
+              <FormLabel>Course Title</FormLabel>
               <FormControl>
-                <Input placeholder="Course Name" {...field} />
+                <Input placeholder="Course Title" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,89 +106,119 @@ export function AddCourse() {
           )}
         />
 
-        {/* Department */}
-        <FormItem>
-          <FormLabel>Department</FormLabel>
-          <div className="space-y-2">
-            {departments.map((dept) => (
-              <div key={dept} className="flex items-center space-x-2">
-                <Checkbox
-                  checked={form.watch("department").includes(dept)}
-                  onCheckedChange={(checked) =>
-                    form.setValue(
-                      "department",
-                      checked
-                        ? [...form.watch("department"), dept]
-                        : form.watch("department").filter((d) => d !== dept)
-                    )
-                  }
-                />
-                <span>{dept}</span>
-              </div>
-            ))}
-          </div>
-        </FormItem>
-
-        {/* Degree */}
-        <FormItem>
-          <FormLabel>Degree</FormLabel>
-          <div className="space-y-2">
-            {degrees.map((deg) => (
-              <div key={deg} className="flex items-center space-x-2">
-                <Checkbox
-                  checked={form.watch("degree").includes(deg)}
-                  onCheckedChange={(checked) =>
-                    form.setValue(
-                      "degree",
-                      checked
-                        ? [...form.watch("degree"), deg]
-                        : form.watch("degree").filter((d) => d !== deg)
-                    )
-                  }
-                />
-                <span>{deg}</span>
-              </div>
-            ))}
-          </div>
-        </FormItem>
-
-        {/* Batch */}
-        <FormItem>
-          <FormLabel>Batch</FormLabel>
-          <div className="space-y-2">
-            {batches.map((batch) => (
-              <div key={batch} className="flex items-center space-x-2">
-                <Checkbox
-                  checked={form.watch("batch").includes(batch)}
-                  onCheckedChange={(checked) =>
-                    form.setValue(
-                      "batch",
-                      checked
-                        ? [...form.watch("batch"), batch]
-                        : form.watch("batch").filter((b) => b !== batch)
-                    )
-                  }
-                />
-                <span>{batch}</span>
-              </div>
-            ))}
-          </div>
-        </FormItem>
-
-        {/* Credits */}
+        {/* Description */}
         <FormField
           control={form.control}
-          name="credits"
+          name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Credits</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="Credits" {...field} />
+                <Textarea placeholder="Course Description" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* Branches */}
+        <FormItem>
+          <FormLabel>Branches</FormLabel>
+          <div className="space-y-2">
+            {branches.map((branch) => (
+              <FormField
+                key={branch}
+                control={form.control}
+                name="branches"
+                render={() => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={form.watch("branches").includes(branch)}
+                        onCheckedChange={(checked) => {
+                          const currentBranches = form.getValues("branches") || [];
+                          form.setValue(
+                            "branches",
+                            checked
+                              ? (currentBranches.length ? [...currentBranches, branch] : [branch])
+                              : currentBranches.filter((b) => b !== branch)
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel>{branch}</FormLabel>
+                  </FormItem>
+                )}
+              />
+            ))}
+          </div>
+        </FormItem>
+
+        {/* Degrees */}
+        <FormItem>
+          <FormLabel>Degrees</FormLabel>
+          <div className="space-y-2">
+            {degrees.map((degree) => (
+              <FormField
+                key={degree}
+                control={form.control}
+                name="degrees"
+                render={() => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={form.watch("degrees").includes(degree)}
+                        onCheckedChange={(checked) => {
+                          const currentDegrees = form.getValues("degrees") || [];
+                          form.setValue(
+                            "degrees",
+                            checked
+                              ? [...currentDegrees, degree]
+                              : currentDegrees.filter((d) => d !== degree)
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel>{degree}</FormLabel>
+                  </FormItem>
+                )}
+              />
+            ))}
+          </div>
+        </FormItem>
+
+        {/* Batches */}
+        <FormItem>
+          <FormLabel>Batches</FormLabel>
+          <div className="space-y-2">
+            {batches.map((batch) => (
+              <FormField
+                key={batch}
+                control={form.control}
+                name="batches"
+                render={() => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={form.watch("batches").includes(batch)}
+                        onCheckedChange={(checked) => {
+                          const currentBatches = form.getValues("batches") || [];
+                          form.setValue(
+                            "batches",
+                            checked
+                              ? [...currentBatches, batch]
+                              : currentBatches.filter((b) => b !== batch)
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel>{batch}</FormLabel>
+                  </FormItem>
+                )}
+              />
+            ))}
+          </div>
+        </FormItem>
 
         <Button type="submit">Add Course</Button>
       </form>

@@ -1,6 +1,8 @@
 import { AddCourse } from "@/components/CourseForm"; // Adjust the path as per your folder structure
 import { FacultyDashboard } from '@/components/faculty_dashboard'; // Adjust import path if needed
-export default function Page() {
+import { withAuth } from '@/components/withAuth';
+
+function Page() {
   return (
     <div className="">
       <FacultyDashboard/>
@@ -14,3 +16,5 @@ export default function Page() {
     </div>
   );
 }
+
+export default withAuth(Page); // Protect the route with authentication

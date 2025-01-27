@@ -1,7 +1,8 @@
 import { AdminDashboard } from "@/components/admin_dashboard";
 import { FacultyRegister } from "@/components/faculty-register";
+import { withAuth } from '@/components/withAuth';
 
-export default function FacReg() {
+function FacReg() {
   return (
     <div className="">
       <AdminDashboard />
@@ -11,3 +12,5 @@ export default function FacReg() {
     </div>
   );
 }
+
+export default withAuth(FacReg);

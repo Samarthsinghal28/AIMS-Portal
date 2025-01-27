@@ -45,7 +45,13 @@ router.post('/', protect, role(['student']), async (req, res) => {
     });
 
     if (existingEnrollment) {
-      return res.status(400).json({ message: 'Already enrolled or enrollment pending.' });
+      if(existingEnrollment.status !== 'pending'){
+        return res.status(400).json({ message: 'Already enrolled or enrollment pending.' });
+      }
+      else{
+        existingEnrollment.status = 'instructor_approval_pending';
+        await existingEnrollment.save();
+      }
     }
 
     // Create a new enrollment with status 'pending'
@@ -250,16 +256,20 @@ router.put('/advisor/approve/:enrollmentId', protect, role(['faculty']), async (
 });
 
 
-// @route   PUT /api/enrollments/:id/drop
+// @route   PUT /api/enrollments/drop
 // @desc    Student drops a course
 // @access  Private (Students only)
-router.put('/:id/drop', protect, role(['student']), async (req, res) => {
+router.put('/drop', protect, role(['student']), async (req, res) => {
+
+  const { courseId } = req.body;
   try {
-    const enrollmentId = req.params.id;
     const studentId = req.user.id;
 
     // Find the enrollment
-    const enrollment = await Enrollment.findById(enrollmentId).populate('course');
+    const enrollment = await await Enrollment.findOne({
+      student: req.user.id,
+      course: courseId,
+    }).populate('course');
 
     if (!enrollment) {
       return res.status(404).json({ message: 'Enrollment not found.' });

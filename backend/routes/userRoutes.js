@@ -187,28 +187,31 @@ router.post('/register', protect, role(['admin']), async (req, res) => {
 // @route   GET /api/users/profile
 // @desc    Get the authenticated student's profile
 // @access  Private (Students only)
-router.get('/profile', protect, role(['student']), async (req, res) => {
+router.get('/profile', protect, role(['student', 'faculty']), async (req, res) => {
   try {
-    // Retrieve the student ID from the authenticated user
-    const studentId = req.user.id;
+    // Retrieve the user ID from the authenticated user
+    const userId = req.user.id;
 
-    // Fetch the student data from the database
-    const student = await User.findById(studentId)
-      .select('-otp -otpExpires') // Exclude sensitive fields
-      .populate('facultyAdvisor', 'name email');
+    // Fetch the user data from the database
+    let user = await User.findById(userId)
+      .select('-otp -otpExpires'); // Exclude sensitive fields
 
-    if (!student) {
-      return res.status(404).json({ message: 'Student not found.' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
     }
 
-    // Ensure the user is a student
-    if (student.role !== 'student') {
-      return res.status(403).json({ message: 'Access denied.' });
+    // Populate fields based on user role
+    if (user.role === 'student') {
+      // For students, populate 'facultyAdvisor'
+      user = await user.populate('facultyAdvisor', 'name email');
+    } else if (user.role === 'faculty') {
+      // For faculty, populate additional fields if necessary
+      // Example: user = await user.populate('department', 'name');
     }
 
-    res.json(student);
+    res.json(user);
   } catch (err) {
-    console.error(err.message);
+    console.error('Error fetching user profile:', err);
     res.status(500).send('Server Error');
   }
 });

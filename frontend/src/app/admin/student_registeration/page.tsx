@@ -1,7 +1,9 @@
 import { AdminDashboard } from "@/components/admin_dashboard";
 import { StudentRegister } from "@/components/student-register";
+import { withAuth } from '@/components/withAuth';
 
-export default function StudReg() {
+
+function StudReg() {
   return (
     <div className="">
       <AdminDashboard />
@@ -11,3 +13,7 @@ export default function StudReg() {
     </div>
   );
 }
+
+export default withAuth(StudReg);
+
+

@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Course = require('../models/Course');
 const { protect, role } = require('../middleware/auth');
+const User = require('../models/User');
+
 
 // @route   POST /api/courses/
 // @desc    Faculty creates a new course
@@ -158,6 +160,21 @@ router.put('/:id/approve', protect, role(['admin']), async (req, res) => {
   }
 });
 
+
+// @route   GET /api/courses/my-courses
+// @desc    Get the faculty's floated courses
+// @access  Private (Faculty only)
+router.get('/my-courses', protect, role(['faculty']), async (req, res) => {
+  try {
+    // Find courses where the instructor field matches the authenticated user's ID
+    const courses = await Course.find({ instructor: req.user.id });
+    // Return the courses array
+    res.json(courses);
+  } catch (err) {
+    console.error('Error fetching faculty courses:', err);
+    res.status(500).send('Server Error');
+  }
+});
 
 
 

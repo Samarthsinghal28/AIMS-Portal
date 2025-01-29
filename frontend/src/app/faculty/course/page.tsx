@@ -1,3 +1,5 @@
+"use client";
+
 import { AddCourse } from "@/components/CourseForm"; // Adjust the path as per your folder structure
 import { FacultyDashboard } from '@/components/faculty_dashboard'; // Adjust import path if needed
 import { withAuth } from '@/components/withAuth';

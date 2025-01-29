@@ -39,7 +39,7 @@ export function LoginForm({
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/login`, { email });
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/users/login`, { email });
       // Handle success (OTP sent)
       setOtpRequested(true);
       setLoading(false);
@@ -56,7 +56,7 @@ export function LoginForm({
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/verify-otp`, { email, otp });
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/users/verify-otp`, { email, otp });
       setLoading(false);
       const user = res.data.user;
       const token = res.data.token;

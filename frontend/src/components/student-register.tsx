@@ -65,7 +65,7 @@ export function StudentRegister() {
         console.log(headers);
         console.log("Fetching faculty advisors...");
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/faculty-advisors`,
+          `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/users/faculty-advisors`,
           {
             headers,
           }
@@ -104,7 +104,7 @@ export function StudentRegister() {
         Authorization: `Bearer ${token}`,
       };
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/register`,
+        `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/users/register`,
         postData,
         {
           headers,

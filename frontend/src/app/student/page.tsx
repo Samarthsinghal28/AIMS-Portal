@@ -93,7 +93,7 @@
 //         };
 //         if (selectedView === "students") {
 //           const res = await axios.get(
-//             "http://localhost:5000/api/users/students",
+//             "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/students",
 //             {
 //               headers,
 //             }
@@ -101,7 +101,7 @@
 //           setStudents(res.data);
 //         } else {
 //           const res = await axios.get(
-//             "http://localhost:5000/api/users/faculty-advisors",
+//             "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/faculty-advisors",
 //             {
 //               headers,
 //             }
@@ -187,7 +187,7 @@ function Student() {
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          "http://localhost:5000/api/users/profile",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/profile`,
           { headers }
         );
 
@@ -217,7 +217,7 @@ function Student() {
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          "http://localhost:5000/api/enrollments/my-courses",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/enrollments/my-courses`,
           { headers }
         );
 

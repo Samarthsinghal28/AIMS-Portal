@@ -61,7 +61,7 @@ router.post('/', protect, role(['faculty']), async (req, res) => {
       branches,
       batches,
       degrees,
-      status: 'pending', // Awaiting admin approval
+      status: 'approved', // Awaiting admin approval
     });
 
     // Save course to the database

@@ -12,6 +12,7 @@ export function AdminDashboard() {
 
   const handleLogout = () => {
     // Clear localStorage
+    console.log("Logging out");
     localStorage.clear();
     window.location.href = "/login";
   };
@@ -38,7 +39,7 @@ export function AdminDashboard() {
         </ul>
         <div className="ml-auto">
           <a
-            href="/login"
+            onClick={handleLogout}
             className="block text-center px-4 py-3 no-underline hover:bg-secondary"
           >
             Logout

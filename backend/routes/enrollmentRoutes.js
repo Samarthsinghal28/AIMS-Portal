@@ -77,17 +77,24 @@ router.post('/', protect, role(['student']), async (req, res) => {
 router.get('/my-courses', protect, role(['student']), async (req, res) => {
   try {
     const enrollments = await Enrollment.find({ student: req.user.id })
-      .populate('course')
+      .populate('course','-status')
       .populate('student', 'name email');
 
+    console.log(enrollments);
     // Separate courses into 'ongoing' and 'completed'
     const ongoingCourses = enrollments
-      .filter((enrollment) => !enrollment.isCompleted)
-      .map((enrollment) => enrollment.course);
+    .filter((enrollment) => !enrollment.isCompleted)
+    .map((enrollment) => {
+      enrollment.course.status = enrollment.status; // Add status directly to the course object
+      return enrollment.course;
+    });
 
     const completedCourses = enrollments
-      .filter((enrollment) => enrollment.isCompleted)
-      .map((enrollment) => enrollment.course);
+    .filter((enrollment) => enrollment.isCompleted)
+    .map((enrollment) => {
+      enrollment.course.status = enrollment.status; // Add status directly to the course object
+      return enrollment.course;
+    });
 
     res.json({ ongoingCourses, completedCourses });
   } catch (err) {

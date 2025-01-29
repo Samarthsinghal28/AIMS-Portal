@@ -223,6 +223,7 @@ function Student() {
 
         // Destructure the ongoing and completed courses from the response
         const { ongoingCourses, completedCourses } = response.data;
+        console.log(ongoingCourses, completedCourses);
 
         // Update the state with the fetched courses
         setOngoingCourses(ongoingCourses);

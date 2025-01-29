@@ -69,7 +69,7 @@
 //         };
 //         if (selectedView === "students") {
 //           const res = await axios.get(
-//             "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/students",
+//             "${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/users/students",
 //             {
 //               headers,
 //             }
@@ -77,7 +77,7 @@
 //           setStudents(res.data);
 //         } else {
 //           const res = await axios.get(
-//             "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/faculty-advisors",
+//             "${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/users/faculty-advisors",
 //             {
 //               headers,
 //             }
@@ -157,7 +157,7 @@ function FacultyProfile() {
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/profile`,
+          `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/users/profile`,
           { headers }
         );
         setProfileData(response.data);
@@ -187,7 +187,7 @@ function FacultyProfile() {
           Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses/my-courses`,
+          `${process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL}/api/courses/my-courses`,
           { headers }
         );
         setCourses(response.data);

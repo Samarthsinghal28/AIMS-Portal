@@ -61,7 +61,7 @@ export function AddCourse() {
 
       console.log(headers);
 
-      const res = await axios.post("http://localhost:5000/api/courses/", data, {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses/`, data, {
         headers,
       });
       console.log("Course added successfully:", res.data);

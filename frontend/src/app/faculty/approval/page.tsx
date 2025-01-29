@@ -191,7 +191,7 @@ function Page() {
         Authorization: `Bearer ${token}`,
       };
       const response = await axios.get(
-        "http://localhost:5000/api/enrollments/instructor/pending",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/enrollments/instructor/pending`,
         { headers }
       );
       const enrollments = response.data;
@@ -231,7 +231,7 @@ function Page() {
         Authorization: `Bearer ${token}`,
       };
       const response = await axios.get(
-        "http://localhost:5000/api/enrollments/advisor/pending",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/enrollments/advisor/pending`,
         { headers }
       );
       const enrollments = response.data;
@@ -268,7 +268,7 @@ function Page() {
         Authorization: `Bearer ${token}`,
       };
       await axios.put(
-        `http://localhost:5000/api/enrollments/instructor/approve/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/enrollments/instructor/approve/${id}`,
         {},
         { headers }
       );
@@ -288,7 +288,7 @@ function Page() {
         Authorization: `Bearer ${token}`,
       };
       await axios.put(
-        `http://localhost:5000/api/enrollments/instructor/reject/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/enrollments/instructor/reject/${id}`,
         {},
         { headers }
       );
@@ -308,7 +308,7 @@ function Page() {
         Authorization: `Bearer ${token}`,
       };
       await axios.put(
-        `http://localhost:5000/api/enrollments/advisor/approve/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/enrollments/advisor/approve/${id}`,
         {},
         { headers }
       );
@@ -328,7 +328,7 @@ function Page() {
         Authorization: `Bearer ${token}`,
       };
       await axios.put(
-        `http://localhost:5000/api/enrollments/advisor/reject/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/enrollments/advisor/reject/${id}`,
         {},
         { headers }
       );

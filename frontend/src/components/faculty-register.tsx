@@ -48,7 +48,7 @@ export function FacultyRegister() {
       };
       const postData = { ...data, role: "faculty" };
       const res = await axios.post(
-        "http://localhost:5000/api/users/register",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/register`,
         postData, // Pass postData as the request body
         { headers } // Pass headers as the config
       );

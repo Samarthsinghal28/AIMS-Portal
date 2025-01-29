@@ -1,3 +1,4 @@
+"use client";
 import { AdminDashboard } from "@/components/admin_dashboard";
 import { FacultyRegister } from "@/components/faculty-register";
 import { withAuth } from '@/components/withAuth';
